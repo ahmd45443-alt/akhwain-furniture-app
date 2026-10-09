@@ -1,7 +1,8 @@
 name: Build Android APK
 
 on:
-push:
+push:pwd
+find . -name pubspec.yaml
 branches:
 - main
 workflow_dispatch:
