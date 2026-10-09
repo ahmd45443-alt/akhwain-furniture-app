@@ -1,1 +1,48 @@
+name: Build Android APK
 
+on:
+workflow_dispatch:
+
+jobs:
+build:
+runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+  - name: Find Flutter project
+    run: |
+      echo "Searching for pubspec.yaml"
+      find . -name pubspec.yaml -not -path "*/.pub-cache/*"
+  - name: Setup Java
+    uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: '17'
+  - name: Setup Flutter
+    uses: subosito/flutter-action@v2
+    with:
+      channel: stable
+  - name: Install dependencies
+    run: |
+      PROJECT_DIR=$(dirname "$(find . -name pubspec.yaml -not -path "*/.pub-cache/*" -print -quit)")
+      if [ -z "$PROJECT_DIR" ]; then
+        echo "ERROR: pubspec.yaml not found"
+        exit 1
+      fi
+      echo "Flutter project: $PROJECT_DIR"
+      cd "$PROJECT_DIR"
+      flutter pub get
+  - name: Build APK
+    run: |
+      PROJECT_DIR=$(dirname "$(find . -name pubspec.yaml -not -path "*/.pub-cache/*" -print -quit)")
+      cd "$PROJECT_DIR"
+      flutter create --platforms=android .
+      flutter pub get
+      flutter build apk --release
+  - name: Upload APK
+    uses: actions/upload-artifact@v4
+    with:
+      name: akhwain-android-apk
+      path: "**/build/app/outputs/flutter-apk/app-release.apk"
+      if-no-files-found: error
