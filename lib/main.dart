@@ -24,8 +24,8 @@ steps:
       channel: stable
   - name: Check project files
     run: |
+      pwd
       ls -la
       find . -name pubspec.yaml
   - name: Install dependencies
     run: flutter pub get
-    working-directory: .
