@@ -1,8 +1,7 @@
 name: Build Android APK
 
 on:
-push:pwd
-find . -name pubspec.yaml
+push:
 branches:
 - main
 workflow_dispatch:
@@ -23,10 +22,17 @@ steps:
     uses: subosito/flutter-action@v2
     with:
       channel: stable
-  - name: Check project files
-    run: |
-      pwd
-      ls -la
-      find . -name pubspec.yaml
   - name: Install dependencies
-    run: flutter pub get
+    run: |
+      if [ ! -f pubspec.yaml ]; then
+        echo "ERROR: pubspec.yaml not found"
+        exit 1
+      fi
+      flutter pub get
+  - name: Build APK
+    run: flutter build apk --release
+  - name: Upload APK
+    uses: actions/upload-artifact@v4
+    with:
+      name: akhwain-furniture-apk
+      path: build/app/outputs/flutter-apk/app-release.apk
