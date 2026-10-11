@@ -1,5 +1,5 @@
 name: akhwain_furniture_app
-description: تطبيق شركة الأخوين لنقل الأثاث المنزلي والمكتبي
+description: تطبيق شركة الأخوين للنقل
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -10,9 +10,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   shared_preferences: ^2.3.0
   url_launcher: ^6.3.0
+  firebase_core: ^3.15.2
+  cloud_firestore: ^5.6.12
 
 dev_dependencies:
   flutter_test:
