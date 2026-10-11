@@ -1,9 +1,13 @@
-
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-void main() {
-  runApp(const AkhwainApp());
-}
+void main() => runApp(const AkhwainApp());
+
+const navy = Color(0xFF102A43);
+const blue = Color(0xFF1D4E89);
+const whatsappNumber = '9647717203122';
+const emailAddress = 'ahmd45443@gmail.com';
+const facebookName = 'شركة الأخوين للنقل داخل وخارج الكوت';
 
 class AkhwainApp extends StatelessWidget {
   const AkhwainApp({super.key});
@@ -12,214 +16,301 @@ class AkhwainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'شركة الأخوين لنقل الأثاث',
+      title: 'شركة الأخوين للنقل',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF174A73),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: navy),
         scaffoldBackgroundColor: const Color(0xFFF5F7FA),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: navy,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: const BorderSide(color: Color(0xFFD9E2EC)),
+          ),
+        ),
       ),
       home: const HomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
-  final List<Map<String, dynamic>> services = const [
-    {
-      'title': 'نقل الأثاث المنزلي',
-      'icon': Icons.chair_alt,
-      'description': 'نقل أثاث البيت بعناية واهتمام',
-    },
-    {
-      'title': 'نقل الأثاث المكتبي',
-      'icon': Icons.business,
-      'description': 'نقل المكاتب والمحلات والشركات',
-    },
-    {
-      'title': 'التغليف والحماية',
-      'icon': Icons.inventory_2,
-      'description': 'تغليف الأثاث للمحافظة عليه',
-    },
-    {
-      'title': 'التحميل والتنزيل',
-      'icon': Icons.local_shipping,
-      'description': 'عمال للتحميل والتنزيل والترتيب',
-    },
-    {
-      'title': 'نقل داخل وخارج الكوت',
-      'icon': Icons.location_on,
-      'description': 'خدمات نقل داخل المدينة وخارجها',
-    },
-    {
-      'title': 'نقل الأجهزة المنزلية',
-      'icon': Icons.kitchen,
-      'description': 'نقل الأجهزة والأغراض المنزلية',
-    },
-  ];
-
+class _HomePageState extends State<HomePage> {
+  int index = 0;
+  final pages = const [HomeTab(), BookingTab(), ContactTab()];
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color(0xFF174A73),
-          foregroundColor: Colors.white,
-          title: const Text(
-            'شركة الأخوين',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          title: const Text('شركة الأخوين للنقل', style: TextStyle(fontWeight: FontWeight.bold)),
+          leading: const Padding(
+            padding: EdgeInsets.all(8),
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.local_shipping_rounded, color: navy),
+            ),
           ),
-          centerTitle: true,
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF174A73),
-                    Color(0xFF2678A8),
-                  ],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                ),
-                borderRadius: BorderRadius.circular(22),
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.local_shipping,
-                    size: 48,
-                    color: Colors.white,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'شركة الأخوين لنقل الأثاث',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'نقل أثاث منزلي ومكتبي داخل الكوت وخارجها',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      height: 1.6,
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'خدمتكم مسؤوليتنا، وأثاثكم بأمان',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'خدماتنا',
-              style: TextStyle(
-                fontSize: 23,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF174A73),
-              ),
-            ),
-            const SizedBox(height: 12),
-            ...services.map(
-              (service) => Card(
-                elevation: 1,
-                color: Colors.white,
-                margin: const EdgeInsets.only(bottom: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(12),
-                  leading: CircleAvatar(
-                    radius: 27,
-                    backgroundColor: const Color(0xFFE5EFF7),
-                    child: Icon(
-                      service['icon'] as IconData,
-                      color: const Color(0xFF174A73),
-                      size: 27,
-                    ),
-                  ),
-                  title: Text(
-                    service['title'] as String,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Text(
-                      service['description'] as String,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: const Column(
-                children: [
-                  Icon(
-                    Icons.support_agent,
-                    size: 42,
-                    color: Color(0xFF174A73),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'تحتاج خدمة نقل؟',
-                    style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'تواصل معنا لحجز خدمة نقل الأثاث.',
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'سيُضاف رقم الهاتف والواتساب بعد تحديد أرقام الشركة.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Center(
-              child: Text(
-                'شركة الأخوين لنقل الأثاث © 2026',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-            const SizedBox(height: 16),
+        body: pages[index],
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: index,
+          onDestinationSelected: (value) => setState(() => index = value),
+          destinations: const [
+            NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'الرئيسية'),
+            NavigationDestination(icon: Icon(Icons.assignment_outlined), selectedIcon: Icon(Icons.assignment), label: 'احجز خدمة'),
+            NavigationDestination(icon: Icon(Icons.contact_phone_outlined), selectedIcon: Icon(Icons.contact_phone), label: 'تواصل ويانه'),
           ],
         ),
       ),
     );
   }
+}
+
+class HomeTab extends StatelessWidget {
+  const HomeTab({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final services = [
+      (Icons.chair_alt_rounded, 'نقل الأثاث المنزلي والمكتبي', 'نقل وترتيب الأثاث بعناية'),
+      (Icons.inventory_2_rounded, 'تغليف الأثاث', 'حماية الأغراض أثناء النقل'),
+      (Icons.handyman_rounded, 'فك وتركيب الأثاث', 'خدمة فك وتركيب حسب الطلب'),
+      (Icons.electrical_services_rounded, 'نقل الأجهزة الكهربائية', 'عناية بالأجهزة أثناء التحميل'),
+      (Icons.local_shipping_rounded, 'نقل داخل وخارج الكوت', 'نقل حسب الوجهة والاتفاق'),
+    ];
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(22),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: const LinearGradient(colors: [navy, blue], begin: Alignment.topRight, end: Alignment.bottomLeft),
+          ),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.local_shipping_rounded, color: Colors.white, size: 48),
+              SizedBox(height: 14),
+              Text('نقل أثاثك… براحة وأمان', style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text('شركة الأخوين للنقل داخل وخارج الكوت', style: TextStyle(color: Colors.white, fontSize: 15)),
+              SizedBox(height: 6),
+              Text('نرتّب النقل من البداية إلى الوصول', style: TextStyle(color: Color(0xFFD9EAF7))),
+            ],
+          ),
+        ),
+        const SizedBox(height: 22),
+        const Text('خدماتنا', style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: navy)),
+        const SizedBox(height: 10),
+        ...services.map((s) => Card(
+          elevation: 0,
+          color: Colors.white,
+          margin: const EdgeInsets.only(bottom: 10),
+          child: ListTile(
+            leading: CircleAvatar(backgroundColor: const Color(0xFFEAF1F8), child: Icon(s.$1, color: navy)),
+            title: Text(s.$2, style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text(s.$3),
+          ),
+        )),
+        const SizedBox(height: 8),
+        FilledButton.icon(
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const BookingPage())),
+          icon: const Icon(Icons.edit_calendar),
+          label: const Padding(padding: EdgeInsets.all(12), child: Text('احجز خدمة هسه')),
+        ),
+      ],
+    );
+  }
+}
+
+class BookingTab extends StatelessWidget {
+  const BookingTab({super.key});
+  @override
+  Widget build(BuildContext context) => const BookingPage(inTab: true);
+}
+
+class BookingPage extends StatefulWidget {
+  final bool inTab;
+  const BookingPage({super.key, this.inTab = false});
+  @override
+  State<BookingPage> createState() => _BookingPageState();
+}
+
+class _BookingPageState extends State<BookingPage> {
+  final formKey = GlobalKey<FormState>();
+  final name = TextEditingController();
+  final phone = TextEditingController();
+  final from = TextEditingController();
+  final to = TextEditingController();
+  final details = TextEditingController();
+  String service = 'نقل أثاث منزلي';
+  String vehicle = 'سيارة نقل';
+  DateTime? date;
+
+  @override
+  void dispose() {
+    name.dispose(); phone.dispose(); from.dispose(); to.dispose(); details.dispose();
+    super.dispose();
+  }
+
+  Future<void> sendBooking() async {
+    if (!formKey.currentState!.validate()) return;
+    final dateText = date == null ? 'غير محدد' : '${date!.year}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}';
+    final message = 'طلب حجز جديد - شركة الأخوين للنقل%0A'
+        'الاسم: ${name.text}%0Aالهاتف: ${phone.text}%0A'
+        'الخدمة: $service%0Aنوع السيارة: $vehicle%0A'
+        'من: ${from.text}%0Aإلى: ${to.text}%0Aالتاريخ: $dateText%0A'
+        'تفاصيل إضافية: ${details.text}';
+    final uri = Uri.parse('https://wa.me/$whatsappNumber?text=${Uri.encodeComponent(message.replaceAll('%0A', '\n'))}');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('تعذّر فتح واتساب. تأكد من تثبيته وحاول مرة ثانية.')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Text('طلب حجز خدمة', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: navy)),
+        const SizedBox(height: 6),
+        const Text('املأ المعلومات، وبعدها ينفتح واتساب برسالة جاهزة لإرسالها للشركة.'),
+        const SizedBox(height: 16),
+        Form(
+          key: formKey,
+          child: Column(children: [
+            field(name, 'الاسم الكامل', Icons.person),
+            const SizedBox(height: 12),
+            field(phone, 'رقم الهاتف', Icons.phone, type: TextInputType.phone),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              value: service,
+              decoration: const InputDecoration(labelText: 'نوع الخدمة', prefixIcon: Icon(Icons.home_repair_service)),
+              items: const ['نقل أثاث منزلي', 'نقل أثاث مكتبي', 'تغليف أثاث', 'فك وتركيب', 'نقل أجهزة كهربائية', 'نقل آخر']
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+              onChanged: (v) => setState(() => service = v!),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              value: vehicle,
+              decoration: const InputDecoration(labelText: 'نوع السيارة/المعدات', prefixIcon: Icon(Icons.local_shipping)),
+              items: const ['سيارة نقل', 'سيارة مع عمال', 'سيارة مع تغليف', 'أحتاج استشارة']
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+              onChanged: (v) => setState(() => vehicle = v!),
+            ),
+            const SizedBox(height: 12),
+            field(from, 'منطقة الانطلاق', Icons.location_on),
+            const SizedBox(height: 12),
+            field(to, 'منطقة الوصول', Icons.flag),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(const Duration(days: 365)),
+                );
+                if (picked != null) setState(() => date = picked);
+              },
+              icon: const Icon(Icons.calendar_month),
+              label: Text(date == null ? 'اختيار موعد النقل' : '${date!.year}/${date!.month}/${date!.day}'),
+            ),
+            const SizedBox(height: 12),
+            field(details, 'تفاصيل إضافية (اختياري)', Icons.notes, requiredField: false, maxLines: 3),
+            const SizedBox(height: 18),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: sendBooking,
+                icon: const Icon(Icons.chat),
+                label: const Padding(padding: EdgeInsets.all(13), child: Text('إرسال الطلب عبر واتساب')),
+              ),
+            ),
+          ]),
+        ),
+        const SizedBox(height: 12),
+        const Text('ملاحظة: الطلب يُرسل إلى واتساب بعد ضغطك على إرسال، ولا يُحفظ في قاعدة بيانات داخل التطبيق حالياً.', style: TextStyle(color: Colors.black54, fontSize: 12)),
+      ],
+    );
+  }
+
+  Widget field(TextEditingController c, String label, IconData icon, {TextInputType type = TextInputType.text, bool requiredField = true, int maxLines = 1}) {
+    return TextFormField(
+      controller: c,
+      keyboardType: type,
+      maxLines: maxLines,
+      decoration: InputDecoration(labelText: label, prefixIcon: Icon(icon)),
+      validator: (v) => requiredField && (v == null || v.trim().isEmpty) ? 'يرجى ملء هذا الحقل' : null,
+    );
+  }
+}
+
+class ContactTab extends StatelessWidget {
+  const ContactTab({super.key});
+  Future<void> openWhatsApp() async {
+    final uri = Uri.parse('https://wa.me/$whatsappNumber');
+    if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+  Future<void> openEmail() async {
+    final uri = Uri(scheme: 'mailto', path: emailAddress, queryParameters: {'subject': 'استفسار - شركة الأخوين للنقل'});
+    if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+  @override
+  Widget build(BuildContext context) => ListView(
+    padding: const EdgeInsets.all(16),
+    children: [
+      const Text('تواصل ويانه', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: navy)),
+      const SizedBox(height: 6),
+      const Text('شركة الأخوين للنقل داخل وخارج الكوت'),
+      const SizedBox(height: 18),
+      contactCard(Icons.mail_rounded, const Color(0xFFD94841), 'البريد الإلكتروني', emailAddress, 'للمراسلات والاستفسارات', openEmail),
+      contactCard(Icons.chat_rounded, const Color(0xFF25D366), 'واتساب', '07717203122', 'للحجز والاستفسار مباشرةً', openWhatsApp),
+      contactCard(Icons.facebook_rounded, const Color(0xFF1877F2), 'فيسبوك', facebookName, 'صفحة الشركة', null),
+      const SizedBox(height: 18),
+      const Card(
+        elevation: 0,
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(Icons.info_outline, color: navy),
+            SizedBox(width: 10),
+            Expanded(child: Text('للحجز، اكتب تفاصيل النقل من خلال صفحة «احجز خدمة»، وسيتم تجهيز رسالة واتساب لإرسالها للشركة.')),
+          ]),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget contactCard(IconData icon, Color color, String title, String value, String subtitle, VoidCallback? action) {
+  return Card(
+    elevation: 0,
+    margin: const EdgeInsets.only(bottom: 12),
+    child: ListTile(
+      onTap: action,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      leading: CircleAvatar(backgroundColor: color, child: Icon(icon, color: Colors.white)),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Padding(padding: const EdgeInsets.only(top: 4), child: Text('$value\n$subtitle')),
+      isThreeLine: true,
+      trailing: action == null ? null : const Icon(Icons.open_in_new, color: navy),
+    ),
+  );
 }
