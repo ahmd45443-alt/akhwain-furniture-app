@@ -28,7 +28,8 @@ jobs:
 
       - name: Create Android project
         run: flutter create . --platforms=android
-
+      - name: Copy Firebase config
+        run: cp google-services.json android/app/google-services.json
       - name: Install dependencies
         run: flutter pub get
 
