@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 void main() => runApp(const AkhwainApp());
 
 const navy = Color(0xFF102A43);
