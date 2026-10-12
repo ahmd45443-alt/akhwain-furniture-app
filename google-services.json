@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "816103192696",
+    "project_id": "akhwain-transport",
+    "storage_bucket": "akhwain-transport.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:816103192696:android:cd7ae9f38a4f97b874558d",
+        "android_client_info": {
+          "package_name": "com.example.akhwain_furniture_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOG_ZxiVzAGaIIfS1rXqNBMzrVqbgs6Ek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
