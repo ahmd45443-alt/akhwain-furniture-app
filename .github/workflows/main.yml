@@ -1,4 +1,3 @@
-
 name: Build Android APK
 
 on:
@@ -6,6 +5,9 @@ on:
     branches:
       - main
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -15,29 +17,46 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
-      - name: Create Android project
-        run: flutter create . --platforms=android
-      - name: Copy Firebase config
-        run: cp google-services.json android/app/google-services.json
+      - name: Verify source files
+        shell: bash
+        run: |
+          pwd
+          ls -la
+          test -f pubspec.yaml || { echo "::error::pubspec.yaml is missing"; exit 1; }
+          test -f lib/main.dart || { echo "::error::lib/main.dart is missing"; exit 1; }
+
+      - name: Create Android Flutter project
+        run: flutter create --platforms=android --project-name akhwain_furniture_app app
+
+      - name: Copy application files
+        shell: bash
+        run: |
+          cp pubspec.yaml app/pubspec.yaml
+          rm -rf app/lib
+          cp -R lib app/lib
+
       - name: Install dependencies
         run: flutter pub get
+        working-directory: app
 
       - name: Build APK
         run: flutter build apk --release
+        working-directory: app
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: akhwain-furniture-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: app/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
