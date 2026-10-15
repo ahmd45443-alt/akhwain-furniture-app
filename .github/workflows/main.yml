@@ -40,13 +40,19 @@ jobs:
         run: flutter create --platforms=android --project-name akhwain_furniture_app app
 
       
-      - name: Copy application files
+          - name: Copy application files
         shell: bash
         run: |
           cp pubspec.yaml app/pubspec.yaml
           rm -rf app/lib
           cp -R lib app/lib
           cp google-services.json app/android/app/google-services.json
+
+      - name: Configure Google Services
+        shell: bash
+        run: |
+          sed -i "/plugins {/a\\    id 'com.google.gms.google-services' version '4.4.2' apply false" app/android/settings.gradle
+          sed -i "/id 'com.android.application'/a\\    id 'com.google.gms.google-services'" app/android/app/build.gradle
 
 
       - name: Install dependencies
