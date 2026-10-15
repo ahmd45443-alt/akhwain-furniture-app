@@ -39,12 +39,15 @@ jobs:
       - name: Create Android Flutter project
         run: flutter create --platforms=android --project-name akhwain_furniture_app app
 
+      
       - name: Copy application files
         shell: bash
         run: |
           cp pubspec.yaml app/pubspec.yaml
           rm -rf app/lib
           cp -R lib app/lib
+          cp google-services.json app/android/app/google-services.json
+
 
       - name: Install dependencies
         run: flutter pub get
