@@ -43,10 +43,10 @@ jobs:
         run: |
           find app/android -name "settings.gradle*" -o -name "build.gradle*"
 
-            - name: Configure Google Services
+                 - name: Configure Google Services
         shell: bash
         run: |
-          find app/android -name "settings.gradle*" -o -name "build.gradle*"
+          find app/android \( -name "settings.gradle*" -o -name "build.gradle*" \) -print
 
 
       - name: Install dependencies
