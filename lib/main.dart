@@ -42,7 +42,7 @@ class AkhwainApp extends StatelessWidget {
           ),
         ),
       ),
-home: const PhoneLoginPage(),
+home: PhoneLoginPage(),
     );
   }
 }
