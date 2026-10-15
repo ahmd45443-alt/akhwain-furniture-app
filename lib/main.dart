@@ -359,3 +359,190 @@ Widget contactCard(IconData icon, Color color, String title, String value, Strin
     ),
   );
 }
+class PhoneLoginPage extends StatefulWidget {
+  const PhoneLoginPage({super.key});
+
+  @override
+  State<PhoneLoginPage> createState() => _PhoneLoginPageState();
+}
+
+class _PhoneLoginPageState extends State<PhoneLoginPage> {
+  final phoneController = TextEditingController();
+  final codeController = TextEditingController();
+
+  String verificationId = '';
+  bool codeSent = false;
+  bool loading = false;
+
+  Future<void> sendCode() async {
+    final phone = phoneController.text.trim();
+
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('أدخل رقم الهاتف مع رمز الدولة')),
+      );
+      return;
+    }
+
+    setState(() => loading = true);
+
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phone,
+        verificationCompleted: (credential) async {
+          await FirebaseAuth.instance.signInWithCredential(credential);
+          if (!mounted) return;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const HomePage()),
+          );
+        },
+        verificationFailed: (error) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.message ?? 'فشل إرسال الرمز')),
+          );
+        },
+        codeSent: (id, resendToken) {
+          if (!mounted) return;
+          setState(() {
+            verificationId = id;
+            codeSent = true;
+          });
+        },
+        codeAutoRetrievalTimeout: (id) {
+          verificationId = id;
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('حدث خطأ: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => loading = false);
+    }
+  }
+
+  Future<void> verifyCode() async {
+    if (codeController.text.trim().isEmpty ||
+        verificationId.isEmpty) {
+      return;
+    }
+
+    setState(() => loading = true);
+
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: codeController.text.trim(),
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('الرمز غير صحيح أو انتهت صلاحيته')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => loading = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    phoneController.dispose();
+    codeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
+      appBar: AppBar(
+        title: const Text('شركة الأخوين لنقل الأثاث'),
+        backgroundColor: const Color(0xFF102A43),
+        foregroundColor: Colors.white,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              const Icon(
+                Icons.local_shipping,
+                size: 85,
+                color: Color(0xFF102A43),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'تسجيل الدخول',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text('أدخل رقم هاتفك لاستلام رمز التحقق'),
+              const SizedBox(height: 24),
+              TextField(
+                controller: phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  labelText: 'رقم الهاتف مع رمز الدولة',
+                  hintText: '+9647XXXXXXXXX',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.phone),
+                ),
+              ),
+              if (codeSent) ...[
+                const SizedBox(height: 16),
+                TextField(
+                  controller: codeController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'رمز التحقق',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.lock),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF102A43),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.all(16),
+                  ),
+                  onPressed: loading
+                      ? null
+                      : codeSent
+                          ? verifyCode
+                          : sendCode,
+                  child: Text(
+                    loading
+                        ? 'انتظر...'
+                        : codeSent
+                            ? 'تأكيد الرمز'
+                            : 'إرسال رمز التحقق',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
