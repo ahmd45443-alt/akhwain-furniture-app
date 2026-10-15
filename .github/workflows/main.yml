@@ -38,7 +38,10 @@ jobs:
 
       - name: Create Android Flutter project
         run: flutter create --platforms=android --project-name akhwain_furniture_app app
-
+      - name: Configure Google Services
+        shell: bash
+        run: |
+          find app/android -name "settings.gradle*" -o -name "build.gradle*"
 
             - name: Configure Google Services
         shell: bash
