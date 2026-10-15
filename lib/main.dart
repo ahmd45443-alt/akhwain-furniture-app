@@ -172,21 +172,60 @@ class _BookingPageState extends State<BookingPage> {
     super.dispose();
   }
 
-  Future<void> sendBooking() async {
-    if (!formKey.currentState!.validate()) return;
-    final dateText = date == null ? 'غير محدد' : '${date!.year}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}';
-    final message = 'طلب حجز جديد - شركة الأخوين للنقل%0A'
-        'الاسم: ${name.text}%0Aالهاتف: ${phone.text}%0A'
-        'الخدمة: $service%0Aنوع السيارة: $vehicle%0A'
-        'من: ${from.text}%0Aإلى: ${to.text}%0Aالتاريخ: $dateText%0A'
+Future<void> sendBooking() async {
+  if (!formKey.currentState!.validate()) return;
+
+  final dateText = date == null
+      ? 'غير محدد'
+      : '${date!.year}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}';
+
+  try {
+    final booking = await FirebaseFirestore.instance
+        .collection('bookings')
+        .add({
+      'name': name.text.trim(),
+      'phone': phone.text.trim(),
+      'service': service,
+      'vehicle': vehicle,
+      'from': from.text.trim(),
+      'to': to.text.trim(),
+      'date': dateText,
+      'details': details.text.trim(),
+      'status': 'new',
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    final message = 'طلب حجز جديد - شركة الأخوين للنقل\n'
+        'رقم الطلب: ${booking.id}\n'
+        'الاسم: ${name.text}\n'
+        'الهاتف: ${phone.text}\n'
+        'الخدمة: $service\n'
+        'نوع السيارة: $vehicle\n'
+        'من: ${from.text}\n'
+        'إلى: ${to.text}\n'
+        'التاريخ: $dateText\n'
         'تفاصيل إضافية: ${details.text}';
-    final uri = Uri.parse('https://wa.me/$whatsappNumber?text=${Uri.encodeComponent(message.replaceAll('%0A', '\n'))}');
+
+    final uri = Uri.https('wa.me', '/$whatsappNumber', {
+      'text': message,
+    });
+
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('تعذّر فتح واتساب. تأكد من تثبيته وحاول مرة ثانية.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تعذّر فتح واتساب.')),
+      );
+    }
+  } catch (e) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('تعذّر حفظ الطلب: $e')),
+      );
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
