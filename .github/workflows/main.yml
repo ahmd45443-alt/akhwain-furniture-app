@@ -40,11 +40,10 @@ jobs:
         run: flutter create --platforms=android --project-name akhwain_furniture_app app
 
 
-      - name: Configure Google Services
+            - name: Configure Google Services
         shell: bash
         run: |
-          sed -i "/plugins {/a\\    id 'com.google.gms.google-services' version '4.4.2' apply false" app/android/settings.gradle
-          sed -i "/id 'com.android.application'/a\\    id 'com.google.gms.google-services'" app/android/app/build.gradle
+          find app/android -name "settings.gradle*" -o -name "build.gradle*"
 
 
       - name: Install dependencies
